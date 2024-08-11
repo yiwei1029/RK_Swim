@@ -21,7 +21,28 @@ double* f(double x, double y, double args[],double integral_y) {
 	double diff[2] = { dxdt, dydt };
 	return diff;
 }
-
-double* rk_step(double x, double y, double args[],vector<double> y_values) {
-
+double integral_trap(vector<double> x_values, vector<double> t_values) {
+	double result;
+	for (int i = 0; i < t_values.size()-1; i++) {
+		double upper = x_values.at(i);
+		double lower = x_values.at(i + 1);
+		double height = t_values.at(i + 1) - t_values.at(i);
+		result = result + 0.5 * (upper + lower) * height;
+	}
+	return result;
+};
+double* rk_step(double x, double y,
+	double args[], vector<double> y_values, vector<double> t_values) {
+	//double k1[2], k2[2], k3[2], k4[2];
+	//double* (*func)(double x, double y, double args[], double integral_y);
+	//func = f;
+	double integral_y = integral_trap(y_values, t_values);
+	double h = args[8];
+	auto k1 = f(x, y, args, integral_y);
+	auto k2 = f(x+h/2 * k1[0], y+h/2*k1[1], args, integral_y);
+	auto k3 = f(x+h/2 * k2[0], y+h/2*k2[1], args, integral_y);
+	auto k4 = f(x+h * k3[0], y+h*k3[1], args, integral_y);
+	double x_y_next[2] = {x + h / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]),
+	y + h / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]) };
+	return x_y_next;
 }
