@@ -4,15 +4,34 @@
 #include<iostream>
 #include<vector>
 using namespace std;
+
+template<typename T>
+vector<T> slice(const vector<T>& vec, size_t start, size_t end) {
+	// Check if indices are within the bounds
+	if (start > end || start >= vec.size() || end > vec.size()) {
+		throw out_of_range("Invalid slice indices");
+	}
+
+	// Create a new vector for the slice
+	return vector<T>(vec.begin() + start, vec.begin() + end);
+}
 double f_float_ratio(double integral_y, double h,double theta) {
 	double ratio_under_water = 1 - integral_y / (h * sin(theta));
 	return min(max(ratio_under_water, 0.0), 1.0);
 }
-double* f(double x, double y, double args[],double integral_y) {
-	double m, P, k, r, Lymax = 
-		args[0], args[1], args[2], args[3], args[4];
-	double rho, g, V_0, h, theta =
-		args[5], args[6], args[7], args[8], args[9];
+double* f(double x, double y, double* args,double integral_y) {
+	// Unpack arguments for clarity
+	double m = args[0];
+	double P = args[1];
+	double k = args[2];
+	double r = args[3];
+	double Lymax = args[4];
+	double rho = args[5];
+	double g = args[6];
+	double V_0 = args[7];
+	double h = args[8];
+	double theta = args[9];
+
 	double dxdt = 1 / m * (P / x) - k * x * sqrt(pow(x, 2) + pow(y, 2));
 	double dydt = 1 / m * (r * (-integral_y)
 		+ rho * g * V_0 * f_float_ratio(integral_y, h, theta)
@@ -22,8 +41,13 @@ double* f(double x, double y, double args[],double integral_y) {
 	return diff;
 }
 double integral_trap(vector<double> x_values, vector<double> t_values) {
-	double result;
-	for (int i = 0; i < t_values.size()-1; i++) {
+	double result=0.0;
+	// Check if the input vectors have the same size and contain at least two points
+	if (x_values.size() != t_values.size() || x_values.size() < 2) {
+		std::cerr << "Error: x_values and t_values must be of the same size and contain at least two elements." << std::endl;
+		return 0.0; // Return 0 in case of error
+	}
+	for (size_t i = 0; i < t_values.size()-1; i++) {
 		double upper = x_values.at(i);
 		double lower = x_values.at(i + 1);
 		double height = t_values.at(i + 1) - t_values.at(i);
@@ -33,7 +57,6 @@ double integral_trap(vector<double> x_values, vector<double> t_values) {
 };
 double* rk_step(double x, double y,
 	double args[], vector<double> y_values, vector<double> t_values) {
-	//double k1[2], k2[2], k3[2], k4[2];
 	//double* (*func)(double x, double y, double args[], double integral_y);
 	//func = f;
 	double integral_y = integral_trap(y_values, t_values);
