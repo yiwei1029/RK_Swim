@@ -34,7 +34,7 @@ double integral_trap(vector<double> x_values, vector<double> t_values) {
 	double result=0.0;
 	// Check if the input vectors have the same size and contain at least two points
 	if (x_values.size() != t_values.size() || x_values.size() < 2) {
-		std::cerr << "Error: x_values and t_values must be of the same size and contain at least two elements." << std::endl;
+		//std::cerr << "x_values and t_values must be of the same size and contain at least two elements." << std::endl;
 		return 0.0; // Return 0 in case of error
 	}
 	for (size_t i = 0; i < t_values.size()-1; i++) {
