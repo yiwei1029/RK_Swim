@@ -5,16 +5,7 @@
 #include<vector>
 using namespace std;
 
-template<typename T>
-vector<T> slice(const vector<T>& vec, size_t start, size_t end) {
-	// Check if indices are within the bounds
-	if (start > end || start >= vec.size() || end > vec.size()) {
-		throw out_of_range("Invalid slice indices");
-	}
 
-	// Create a new vector for the slice
-	return vector<T>(vec.begin() + start, vec.begin() + end);
-}
 double f_float_ratio(double integral_y, double h,double theta) {
 	double ratio_under_water = 1 - integral_y / (h * sin(theta));
 	return min(max(ratio_under_water, 0.0), 1.0);
@@ -29,12 +20,11 @@ double* f(double x, double y, double* args,double integral_y) {
 	double rho = args[5];
 	double g = args[6];
 	double V_0 = args[7];
-	double h = args[8];
+	double height = args[8];
 	double theta = args[9];
-
 	double dxdt = 1 / m * (P / x) - k * x * sqrt(pow(x, 2) + pow(y, 2));
 	double dydt = 1 / m * (r * (-integral_y)
-		+ rho * g * V_0 * f_float_ratio(integral_y, h, theta)
+		+ rho * g * V_0 * f_float_ratio(integral_y, height, theta)
 		- m * g - k * abs(x) * sqrt(pow(x, 2) + pow(y, 2))
 		);
 	double diff[2] = { dxdt, dydt };
@@ -55,12 +45,11 @@ double integral_trap(vector<double> x_values, vector<double> t_values) {
 	}
 	return result;
 };
-double* rk_step(double x, double y,
+double* rk_step(double x, double y,double h,
 	double args[], vector<double> y_values, vector<double> t_values) {
 	//double* (*func)(double x, double y, double args[], double integral_y);
 	//func = f;
 	double integral_y = integral_trap(y_values, t_values);
-	double h = args[8];
 	auto k1 = f(x, y, args, integral_y);
 	auto k2 = f(x+h/2 * k1[0], y+h/2*k1[1], args, integral_y);
 	auto k3 = f(x+h/2 * k2[0], y+h/2*k2[1], args, integral_y);

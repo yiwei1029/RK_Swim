@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include"Algo.h"
 #include<vector>
@@ -14,13 +13,16 @@ int main()
    }
 	vector<double> x = { 1 };
 	vector<double> y = { 1 };
+	cout << x.at(0) << endl;
 	double args[10] = { 65,100,0.5,100,1 ,
 				1000,10,0.06,1.7,M_PI / 6 };
 	for (size_t i = 0; i < t.size()-1; i++) {
-		double* xynext = rk_step(x.at(i), y.at(i), args, y, slice(t, 0, i + 1));
+		double* xynext = rk_step(x.at(i), y.at(i),t.at(i+1)-t.at(i), args,
+			y, slice(t, 0, i + 1));
 		x.push_back(xynext[0]);
 		y.push_back(xynext[1]);
-		cout << "x_next: " << xynext[0] << endl;
+		cout << x.at(i) << "  ";
+
 	}
 
 }
