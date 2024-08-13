@@ -23,7 +23,7 @@ double* f(double x, double y, double* args,double integral_y) {
 	double height = args[8];
 	double theta = args[9];
 	double dxdt = 1 / m * (P / x) - k * x * sqrt(pow(x, 2) + pow(y, 2));
-	double dydt = 1 / m * (r * (-integral_y)
+	double dydt = 1 / m * (r * (Lymax -integral_y)
 		+ rho * g * V_0 * f_float_ratio(integral_y, height, theta)
 		- m * g - k * abs(x) * sqrt(pow(x, 2) + pow(y, 2))
 		);

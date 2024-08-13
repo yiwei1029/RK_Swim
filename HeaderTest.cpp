@@ -3,6 +3,7 @@
 #include<vector>
 #include"RK.h"
 #include<cmath>
+#include"Utils.h"
 #define M_PI 3.14159265358979323846
 using namespace std;
 int main()
@@ -21,9 +22,11 @@ int main()
 			y, slice(t, 0, i + 1));
 		x.push_back(xynext[0]);
 		y.push_back(xynext[1]);
-		cout << x.at(i) << "  ";
+		//cout << x.at(i) << "  ";
 
 	}
+	print_vec2file(y, 
+		"C:\\Users\\Administrator\\Documents\\cpp_projects\\HeaderTest\\v_y.txt");
 
 }
 
